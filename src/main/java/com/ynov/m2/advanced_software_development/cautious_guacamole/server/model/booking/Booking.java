@@ -1,17 +1,11 @@
-package com.ynov.m2.advanced_software_development.cautious_guacamole.objects.booking;
+package com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.booking;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.room.Room;
+import jakarta.persistence.*;
 
 
 @Entity
@@ -20,7 +14,10 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String roomName;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GuestState> guests = new ArrayList<>();
@@ -28,27 +25,31 @@ public class Booking {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    public Booking(String roomName, List<GuestState> guests, LocalDateTime startTime, LocalDateTime endTime) {
-        this.roomName = roomName;
+    public Booking(Room room, List<GuestState> guests, LocalDateTime startTime, LocalDateTime endTime) {
+        this.room = room;
         this.guests = guests;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public Booking(Long id, String roomName, List<GuestState> guests, LocalDateTime startTime, LocalDateTime endTime) {
+    public Booking(Long id, Room room, List<GuestState> guests, LocalDateTime startTime, LocalDateTime endTime) {
         this.id = id;
-        this.roomName = roomName;
+        this.room = room;
         this.guests = guests;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public String getRoomName() {
-        return roomName;
+    public Booking() {
+
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     public List<GuestState> getGuests() {
@@ -78,7 +79,7 @@ public class Booking {
     @Override
     public String toString() {
         return "Booking{" +
-                "roomName='" + roomName + '\'' +
+                "roomName='" + room + '\'' +
                 ", bookedBy='" + guests + '\'' +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +

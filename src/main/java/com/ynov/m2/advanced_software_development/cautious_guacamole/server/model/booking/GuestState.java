@@ -1,6 +1,6 @@
-package com.ynov.m2.advanced_software_development.cautious_guacamole.objects.booking;
+package com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.booking;
 
-import com.ynov.m2.advanced_software_development.cautious_guacamole.objects.user.User;
+import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.user.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
