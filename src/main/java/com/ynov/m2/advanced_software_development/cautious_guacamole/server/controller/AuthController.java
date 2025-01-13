@@ -30,11 +30,10 @@ public class AuthController {
         }
     }
 
-    // --- 2) REGISTER (optionnel) ---
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User newUser) {
         try {
-            User created = authService.register(newUser);
+            User created = authService.register(newUser.getName(), newUser.getPassword(), newUser.getEmail(), newUser.getRole());
             return new ResponseEntity<>(created, HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -35,17 +35,18 @@ public class AuthService {
         return null;
     }
 
-    public User register(User user) {
-        if (userRepository.findByUsername(user.getName()) != null) {
+    public User register(String username, String password, String email, String role) {
+        if (userRepository.findByUsername(username) != null) {
             return null;
         }
 
-        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
         User newUser = new User();
-        newUser.setName(user.getName());
+        newUser.setName(username);
         newUser.setPassword(hashedPassword);
-        newUser.setEmail(user.getEmail());
+        newUser.setEmail(email);
+        newUser.setRole(role);
 
         return userRepository.save(newUser);
     }

@@ -11,10 +11,9 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/bookings")
@@ -56,6 +55,26 @@ public class BookingController {
         );
 
         return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<Booking>> getMyReservations(HttpServletRequest request) {
+        Claims claims = (Claims) request.getAttribute("claims");
+        Long userId = claims.get("userId", Long.class);
+        List<Booking> reservations = bookingService.getReservationsByUser(userId);
+        return ResponseEntity.ok(reservations);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> cancelReservation(@PathVariable("id") Long reservationId) {
+        bookingService.cancelReservation(reservationId);
+        return ResponseEntity.ok("Réservation annulée !");
+    }
+
+    @GetMapping("/room/{roomId}")
+    public ResponseEntity<List<Booking>> getReservationsBySalle(@PathVariable("salleId") Long salleId) {
+        List<Booking> reservations = bookingService.getReservationsBySalle(salleId);
+        return ResponseEntity.ok(reservations);
     }
 
 }

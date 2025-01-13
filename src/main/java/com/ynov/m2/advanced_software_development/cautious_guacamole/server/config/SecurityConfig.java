@@ -34,7 +34,7 @@ public class SecurityConfig {
 
                 // Configuration des règles d'autorisation
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/auth/register").permitAll()
                         .anyRequest().authenticated()
                 )
 
