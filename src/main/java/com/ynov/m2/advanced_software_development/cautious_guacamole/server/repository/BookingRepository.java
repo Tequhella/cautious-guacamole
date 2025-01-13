@@ -4,9 +4,15 @@ import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    // Possibilité de méthodes personnalisées, par ex:
-    // List<Reservation> findBySalleId(Long salleId);
-    // List<Reservation> findByUtilisateurId(Long utilisateurId);
+
+    List<Booking> findByRoomId(Long roomId);
+
+    List<Booking> findByRoomName(String name);
+
+    List<Booking> findByUserId(Long userId);
+
 }

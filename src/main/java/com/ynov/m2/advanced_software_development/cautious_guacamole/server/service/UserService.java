@@ -24,19 +24,17 @@ public class UserService {
     @Autowired
     private UserRepository userRepo;
 
-    public String authenticate(String username, String password) {
-        // Rechercher l'utilisateur
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-
-        // Vérifier le password (hash bcrypt par ex.)
-        if (!passwordMatches(password, user.getPassword())) {
-            throw new RuntimeException("Mot de passe invalide");
-        }
-
-        // Générer le token
-        return generateToken(user);
-    }
+    //public String authenticate(String username, String password) {
+    //    User user = userRepo.findByUsername(username)
+    //            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+//
+    //    // Vérifier le password (hash bcrypt par ex.)
+    //    if (!passwordMatches(password, user.getPassword())) {
+    //        throw new RuntimeException("Mot de passe invalide");
+    //    }
+//
+    //    return generateToken(user);
+    //}
 
     private String generateToken(User user) {
         Date now = new Date(System.currentTimeMillis());

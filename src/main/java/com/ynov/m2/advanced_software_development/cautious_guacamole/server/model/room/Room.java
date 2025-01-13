@@ -1,12 +1,13 @@
 package com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.room;
 
 import jakarta.persistence.*;
-
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
-@Table(name = "room")
+@Getter
+@Setter
 public class Room {
 
     @Id
@@ -19,58 +20,18 @@ public class Room {
 
     private String description;
 
-    private Equipment equipements;
+    private String equipments;
 
-    public Room(Long id, String name, int seats, String description, Equipment equipements) {
+    public Room(String name, int seats, String description, String equipments) {
         this.id = id;
         this.name = name;
         this.seats = seats;
         this.description = description;
-        this.equipements = equipements;
+        this.equipments = equipments;
     }
 
     public Room() {
 
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getSeats() {
-        return seats;
-    }
-
-    public void setSeats(int seats) {
-        this.seats = seats;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<String> getEquipements() {
-        return equipements;
-    }
-
-    public void setEquipements(List<String> equipements) {
-        this.equipements = equipements;
     }
 
 }

@@ -1,9 +1,12 @@
 package com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.user;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Table(name = "user")
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -19,62 +22,16 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private boolean isAdmin;
+    private String role;
 
-    public User(Long id, String name, String email, boolean isAdmin) {
-        this.id = id;
+    public User(String name, String email, String role) {
         this.name = name;
         this.email = email;
-        this.isAdmin = isAdmin;
-    }
-
-    public User(String name, String email, boolean isAdmin) {
-        this.name = name;
-        this.email = email;
-        this.isAdmin = isAdmin;
+        this.role = role;
     }
 
     public User() {
 
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

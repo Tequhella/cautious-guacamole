@@ -2,14 +2,18 @@ package com.ynov.m2.advanced_software_development.cautious_guacamole.server.mode
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.room.Room;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
-@Table(name = "booking")
+@Getter
+@Setter
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,18 +26,13 @@ public class Booking {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GuestState> guests = new ArrayList<>();
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startTime;
 
-    public Booking(Room room, List<GuestState> guests, LocalDateTime startTime, LocalDateTime endTime) {
-        this.room = room;
-        this.guests = guests;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endTime;
 
-    public Booking(Long id, Room room, List<GuestState> guests, LocalDateTime startTime, LocalDateTime endTime) {
-        this.id = id;
+    public Booking(Room room, List<GuestState> guests, Date startTime, Date endTime) {
         this.room = room;
         this.guests = guests;
         this.startTime = startTime;
@@ -44,45 +43,4 @@ public class Booking {
 
     }
 
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public List<GuestState> getGuests() {
-        return guests;
-    }
-
-    public void setGuests(List<GuestState> guests) {
-        this.guests = guests;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Booking{" +
-                "roomName='" + room + '\'' +
-                ", bookedBy='" + guests + '\'' +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                '}';
-    }
 }
