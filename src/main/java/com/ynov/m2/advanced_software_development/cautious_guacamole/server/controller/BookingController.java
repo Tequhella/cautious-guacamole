@@ -34,11 +34,9 @@ public class BookingController {
     @PostMapping("/create")
     public ResponseEntity<?> createBooking(@RequestBody Booking booking,
                                                HttpServletRequest request) {
-        Claims claims = (Claims) request.getAttribute("claims");
-        User user = claims.get("user", User.class);
 
         GuestState guestState = new GuestState();
-        guestState.setUser(user);
+        guestState.setUser(booking.getUser());
         guestState.setState(State.PENDING);
         booking.getGuests().add(guestState);
 
