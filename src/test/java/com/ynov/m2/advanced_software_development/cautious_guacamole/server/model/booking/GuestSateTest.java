@@ -5,9 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-// Ajoutez cet import manquant
-import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.booking.GuestState;
-
 class GuestStateTest {
 
     private GuestState guestState;
