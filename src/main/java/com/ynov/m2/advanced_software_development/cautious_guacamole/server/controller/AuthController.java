@@ -1,7 +1,9 @@
 package com.ynov.m2.advanced_software_development.cautious_guacamole.server.controller;
 
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.user.User;
+import com.ynov.m2.advanced_software_development.cautious_guacamole.server.security.JwtUtils;
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.service.AuthService;
+import com.ynov.m2.advanced_software_development.cautious_guacamole.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,39 +17,63 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Autowired
-    private AuthService authService;
+    private JwtUtils jwtUtils;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            String token = authService.authenticate(loginRequest.username,
-                    loginRequest.password);
-            // On renvoie un objet contenant le token
-            return ResponseEntity.ok(new LoginResponse(token));
-        } catch (Exception e) {
-            // 401 Unauthorized ou 400 Bad Request selon le cas
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    @Autowired
+    private UserService userService;
+
+    // ENDPOINT: POST /auth/register
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        // Vérifier si l'email existe déjà, etc.
+        if (userService.findByEmail(request.email) != null) {
+            return ResponseEntity.badRequest()
+                    .body("L'email existe déjà : " + request.email);
         }
+
+        // Créer l'utilisateur en base
+        User user = userService.saveUser(request.email, request.password, request.username, request.role);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User newUser) {
-        try {
-            User created = authService.register(newUser.getName(), newUser.getPassword(), newUser.getEmail(), newUser.getRole());
-            return new ResponseEntity<>(created, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    // ENDPOINT: POST /auth/login
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        // Vérifier que l'utilisateur existe et que le mot de passe correspond
+        User user = userService.findByEmail(request.email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Utilisateur introuvable pour l'email : " + request.email);
         }
+        if (!user.getPassword().equals(request.password)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Mot de passe invalide");
+        }
+
+        // Générer un token JWT
+        String token = JwtUtils.generateToken(user.getEmail());
+
+        return ResponseEntity.ok(new LoginResponse(token));
+    }
+
+    // Classes DTO pour simplifier
+    static class RegisterRequest {
+        public String email;
+        public String password;
+        public String username;
+        public String role;
     }
 
     static class LoginRequest {
-        private String username;
-        private String password;
+        public String email;
+        public String password;
     }
 
     static class LoginResponse {
-        private String token;
-        public LoginResponse(String token) { this.token = token; }
-        public String getToken() { return token; }
+        public String token;
+        public LoginResponse(String token) {
+            this.token = token;
+        }
     }
 }
