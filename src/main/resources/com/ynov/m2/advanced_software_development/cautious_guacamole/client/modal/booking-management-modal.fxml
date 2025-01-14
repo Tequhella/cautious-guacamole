@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" style="-fx-padding: 15; -fx-background-color: #ffffff; -fx-border-width: 3; -fx-border-color: #000000;" fx:controller="com.ynov.m2.advanced_software_development.cautious_guacamole.client.controller.BookingManagementModalController">
+
+    <!-- Titre de la modal -->
+    <top>
+        <Label text="Gestion de la réservation" style="-fx-font-size: 20px; -fx-font-weight: bold;" BorderPane.alignment="CENTER" />
+    </top>
+
+    <center>
+        <!-- Conteneur pour les champs de saisie et le composant utilisateur -->
+        <HBox spacing="30">
+            <!-- Partie gauche : Date et heure de début et de fin -->
+            <GridPane hgap="10" vgap="10">
+                <!-- Date et heure de début -->
+                <Label text="Date de début :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                <Label text="Heure de début :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <TextField fx:id="startTimeField" promptText="HH:MM" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <!-- Date et heure de fin -->
+                <Label text="Date de fin :" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <DatePicker fx:id="endDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                <Label text="Heure de fin :" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                <TextField fx:id="endTimeField" promptText="HH:MM" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            </GridPane>
+
+            <!-- Partie droite : Composant User State -->
+            <VBox fx:id="userStateComponentContainer" prefWidth="150">
+                <fx:include source="../component/user-state-component.fxml" />
+            </VBox>
+        </HBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="20" alignment="CENTER_RIGHT" style="-fx-padding: 10">
+            <children>
+                <Button text="Cancel" fx:id="cancelButton" onAction="#handleCancel" />
+                <HBox HBox.hgrow="ALWAYS" />
+                <Button text="Supprimer" style="-fx-background-color: red;" />
+                <HBox HBox.hgrow="ALWAYS" />
+                <Button text="Enregistrer les modifications" fx:id="createRoomButton" />
+            </children>
+        </HBox>
+    </bottom>
+
+</BorderPane>

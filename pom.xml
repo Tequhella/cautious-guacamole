@@ -92,6 +92,11 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
+    </dependency>
+    <dependency>
+			<groupId>org.controlsfx</groupId>
+			<artifactId>controlsfx</artifactId>
+			<version>11.1.0</version>
 		</dependency>
 	</dependencies>
 
@@ -113,7 +118,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>com.ynov.m2.advanced_software_development.cautious_guacamole.client.page.LoginPage</mainClass>
+					<mainClass>com.ynov.m2.advanced_software_development.cautious_guacamole.client.page.HomePage</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
