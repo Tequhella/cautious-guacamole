@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.CheckComboBox?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<BorderPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            style="-fx-padding: 20; -fx-border-width: 3; -fx-border-color: #000000;"
+            fx:controller="com.ynov.m2.advanced_software_development.cautious_guacamole.client.controller.BookingModalController">
+
+    <!-- Titre de la Modal -->
+    <top>
+        <Label text="Réserver une salle" style="-fx-font-size: 20px; -fx-font-weight: bold;"
+               BorderPane.alignment="CENTER" />
+    </top>
+
+    <!-- Contenu centré -->
+    <center>
+        <GridPane hgap="20" vgap="15" alignment="CENTER">
+            <children>
+
+                <!-- Dropdown pour sélectionner une salle -->
+                <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                    <children>
+                        <Label text="Salle" />
+                        <ComboBox fx:id="roomDropdown" promptText="Choisir une salle">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="salle1"/>
+                                    <String fx:value="salle2"/>
+                                    <String fx:value="salle3"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                    </children>
+                </VBox>
+
+                <!-- CheckComboBox pour la sélection multiple des utilisateurs -->
+                <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                    <children>
+                        <Label text="Utilisateur" />
+                        <CheckComboBox fx:id="userDropdown" />
+                    </children>
+                </VBox>
+
+                <!-- Date et heure de début -->
+                <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                    <children>
+                        <Label text="Date et Heure de Début" />
+                        <HBox spacing="10">
+                            <DatePicker fx:id="startDatePicker" />
+                            <TextField fx:id="startTimeField" promptText="HH:mm" prefWidth="60" />
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <!-- Date et heure de fin -->
+                <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <children>
+                        <Label text="Date et Heure de Fin" />
+                        <HBox spacing="10">
+                            <DatePicker fx:id="endDatePicker" />
+                            <TextField fx:id="endTimeField" promptText="HH:mm" prefWidth="60" />
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </GridPane>
+    </center>
+
+    <!-- Boutons en bas de la modal -->
+    <bottom>
+        <HBox spacing="20" alignment="CENTER_RIGHT" style="-fx-padding: 10">
+            <children>
+                <Button text="Cancel" fx:id="cancelButton" onAction="#handleCancel" />
+                <HBox HBox.hgrow="ALWAYS" />
+                <Button text="Réserver" fx:id="reserveButton" />
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

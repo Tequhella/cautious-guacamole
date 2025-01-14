@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ynov.m2.advanced_software_development.cautious_guacamole.client.controller.SignUpPageController">
+    <children>
+        <VBox spacing="15" alignment="CENTER" maxWidth="300">
+            <Label text="Inscription" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+            <!-- Champ Nom -->
+            <TextField promptText="Nom" fx:id="nameField" />
+
+            <!-- Champ Email -->
+            <TextField promptText="Email" fx:id="emailField" />
+
+            <!-- Champ Mot de Passe -->
+            <PasswordField promptText="Mot de passe" fx:id="passwordField" />
+
+            <!-- Champ Confirmation Mot de Passe -->
+            <PasswordField promptText="Confirmer le mot de passe" fx:id="confirmPasswordField" />
+
+            <!-- Bouton "J'ai déjà un compte" -->
+            <Button text="J'ai déjà un compte" fx:id="alreadyHaveAccountButton" onAction="#handleHaveAccount"/>
+
+            <!-- Bouton Inscription -->
+            <Button text="S'inscrire" fx:id="signUpButton" maxWidth="Infinity" />
+        </VBox>
+    </children>
+</StackPane>
