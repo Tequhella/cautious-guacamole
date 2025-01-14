@@ -36,7 +36,7 @@ public class BookingService {
     public boolean isRoomAvailable(Long roomId, Date start, Date end) {
         List<Booking> existingBookings = bookingRepository.findByRoomId(roomId);
         for (Booking booking : existingBookings) {
-            if (booking.getStartTime().before(end) && booking.getEndTime().after(start)) {
+            if ((start.before(booking.getEndTime()) && start.after(booking.getStartTime())) || (end.before(booking.getStartTime()) && end.after(booking.getEndTime()))) {
                 return false;
             }
         }
@@ -64,6 +64,10 @@ public class BookingService {
 
     public List<Booking> getReservationsBySalle(Long roomId) {
         return bookingRepository.findByRoomId(roomId);
+    }
+
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
     }
 
 }
