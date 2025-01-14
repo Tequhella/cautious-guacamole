@@ -2,6 +2,7 @@ package com.ynov.m2.advanced_software_development.cautious_guacamole.server.cont
 
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.controller.AuthController.LoginRequest;
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.controller.AuthController.LoginResponse;
+import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.user.User;
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.user.UserTest;
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ class AuthControllerTest {
     private AuthController authController;
 
     private LoginRequest loginRequest;
-    private UserTest newUser;
+    private User newUser;
 
     @BeforeEach
     void setUp() {
@@ -40,8 +41,8 @@ class AuthControllerTest {
         // Ici, on utilise l'accès direct si on est dans le même package.
         // Sinon, adaptez selon votre besoin.
 
-        newUser = new UserTest();
-        newUser.setUsername("newUser");
+        newUser = new User();
+        newUser.setName("newUser");
         newUser.setPassword("newPass");
         newUser.setEmail("newuser@example.com");
     }
@@ -65,7 +66,7 @@ class AuthControllerTest {
         LoginResponse loginResponse = (LoginResponse) response.getBody();
         assertEquals("fake-jwt-token", loginResponse.getToken());
         verify(authService, times(1))
-                .authenticate(loginRequest.username, loginRequest.password);
+                .authenticate(loginRequest.getUsername(), loginRequest.getPassword());
     }
 
     @Test
@@ -83,20 +84,20 @@ class AuthControllerTest {
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("Invalid credentials", response.getBody());
         verify(authService, times(1))
-                .authenticate(loginRequest.username, loginRequest.password);
+                .authenticate(loginRequest.getUsername(), loginRequest.getPassword());
     }
 
     @Test
     void testRegister_Success() throws Exception {
         // Arrange
         // Simule l'inscription réussie de l'utilisateur
-        UserTest createdUser = new UserTest();
+        User createdUser = new User();
         createdUser.setId(1L);
         createdUser.setUsername(newUser.getUsername());
         createdUser.setPassword(newUser.getPassword());
         createdUser.setEmail(newUser.getEmail());
 
-        when(authService.register(any(UserTest.class))).thenReturn(createdUser);
+        when(authService.register(anyString(), anyString(), anyString(), anyString())).thenReturn(createdUser);
 
         // Act
         ResponseEntity<?> response = authController.register(newUser);
@@ -106,20 +107,20 @@ class AuthControllerTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         // On s'attend à recevoir l'utilisateur créé en body
         assertTrue(response.getBody() instanceof UserTest);
-        UserTest responseUser = (UserTest) response.getBody();
+        User responseUser = (User) response.getBody();
         assertEquals(1L, responseUser.getId());
         assertEquals("newUser", responseUser.getUsername());
         assertEquals("newuser@example.com", responseUser.getEmail());
 
         // Vérifie qu'on a bien appelé authService.register une seule fois
-        verify(authService, times(1)).register(any(UserTest.class));
+        verify(authService, times(1)).register(anyString(), anyString(), anyString(), anyString());
     }
 
     @Test
     void testRegister_Failure() throws Exception {
         // Arrange
         // Simule un échec d'inscription -> on lève une exception
-        when(authService.register(any(UserTest.class)))
+        when(authService.register(anyString(), anyString(), anyString(), anyString()))
                 .thenThrow(new RuntimeException("User already exists"));
 
         // Act
@@ -129,6 +130,6 @@ class AuthControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("User already exists", response.getBody());
-        verify(authService, times(1)).register(any(UserTest.class));
+        verify(authService, times(1)).register(anyString(), anyString(), anyString(), anyString());
     }
 }

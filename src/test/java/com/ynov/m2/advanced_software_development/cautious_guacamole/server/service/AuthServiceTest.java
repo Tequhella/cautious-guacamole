@@ -107,7 +107,7 @@ class AuthServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         // Act
-        User result = authService.register(newUser);
+        User result = authService.register(newUser.getName(), newUser.getPassword(), newUser.getEmail(), newUser.getRole());
 
         // Assert
         assertNotNull(result, "Le nouvel utilisateur doit être créé");
@@ -132,7 +132,7 @@ class AuthServiceTest {
         newUser.setEmail("alice@again.com");
 
         // Act
-        User result = authService.register(newUser);
+        User result = authService.register(newUser.getName(), newUser.getPassword(), newUser.getEmail(), newUser.getRole());
 
         // Assert
         assertNull(result, "Si l'utilisateur existe déjà, on renvoie null");
