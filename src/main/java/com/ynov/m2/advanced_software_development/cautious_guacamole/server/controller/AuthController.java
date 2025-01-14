@@ -22,7 +22,6 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // ENDPOINT: POST /auth/register
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         // Vérifier si l'email existe déjà, etc.
@@ -31,16 +30,13 @@ public class AuthController {
                     .body("L'email existe déjà : " + request.email);
         }
 
-        // Créer l'utilisateur en base
         User user = userService.saveUser(request.email, request.password, request.username, request.role);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    // ENDPOINT: POST /auth/login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        // Vérifier que l'utilisateur existe et que le mot de passe correspond
         User user = userService.findByEmail(request.email);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -51,13 +47,11 @@ public class AuthController {
                     .body("Mot de passe invalide");
         }
 
-        // Générer un token JWT
         String token = JwtUtils.generateToken(user.getEmail());
 
         return ResponseEntity.ok(new LoginResponse(token));
     }
 
-    // Classes DTO pour simplifier
     static class RegisterRequest {
         public String email;
         public String password;

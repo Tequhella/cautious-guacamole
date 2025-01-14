@@ -21,14 +21,14 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
-    //public Room createRoom(Room room) {
-    //    if (room.getName() == null || room.getName().isBlank()) {
-    //        throw new IllegalArgumentException("Le nom de la salle est obligatoire");
-    //    }
-    //    if (roomRepository.findRoomByName(room.getName()).isPresent()) {
-    //        throw new IllegalStateException("Une salle avec ce nom existe déjà !");
-    //    }
-    //    return roomRepository.save(room);
-    //}
+    public Room createRoom(Room room) {
+        if (room.getName() == null || room.getName().isBlank()) {
+            throw new IllegalArgumentException("Le nom de la salle est obligatoire");
+        }
+        if (roomRepository.findRoomByName(room.getName()) != null) {
+            throw new IllegalStateException("Une salle avec ce nom existe déjà !");
+        }
+        return roomRepository.save(room);
+    }
 
 }

@@ -31,7 +31,7 @@ public class BookingController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createBooking(@RequestBody Booking booking,
                                                HttpServletRequest request) {
         Claims claims = (Claims) request.getAttribute("claims");
