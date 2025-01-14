@@ -22,8 +22,7 @@ public class ForgotPasswordModalController {
     }
 
     // Action au clic sur le bouton "Envoyer"
-    @FXML
-    private void handleSend() {
+    @FXML void handleSend() {
         String email = emailField.getText();
         // Ici vous pouvez ajouter la logique pour envoyer l'email (ex. vérification, envoi, etc.)
         System.out.println("Email envoyé à: " + email);  // Exemple d'action à faire
@@ -31,8 +30,7 @@ public class ForgotPasswordModalController {
     }
 
     // Action au clic sur le bouton "Annuler"
-    @FXML
-    private void handleCancel() {
+    @FXML void handleCancel() {
         modal.close();  // Ferme simplement la modal
     }
 }

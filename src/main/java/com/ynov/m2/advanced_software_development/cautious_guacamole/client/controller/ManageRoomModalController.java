@@ -14,8 +14,7 @@ public class ManageRoomModalController {
     }
 
     // Action au clic sur le bouton "Annuler"
-    @FXML
-    private void handleCancel() {
+    @FXML void handleCancel() {
         modal.close();  // Ferme simplement la modal
     }
 

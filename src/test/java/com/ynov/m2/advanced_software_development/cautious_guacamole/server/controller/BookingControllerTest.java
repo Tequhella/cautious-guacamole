@@ -1,6 +1,7 @@
 package com.ynov.m2.advanced_software_development.cautious_guacamole.server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -62,6 +63,7 @@ public class BookingControllerTest {
         when(bookingService.createBooking(booking)).thenReturn(savedBooking);
 
         ResponseEntity<?> response = bookingController.createBooking(booking, request);
+        assertNotNull(response);
         assertEquals(ResponseEntity.ok(savedBooking), response);
         verify(bookingService, times(1)).createBooking(booking);
         verify(notificationService, times(1)).envoyerNotification(
@@ -93,5 +95,28 @@ public class BookingControllerTest {
         verify(bookingService, times(1)).createBooking(booking);
         verify(notificationService, times(1)).envoyerNotification(
                 anyString(), anyString(), anyString());
+    }
+
+    @Test
+    public void testCreateBookingWithoutOwner() {
+        Booking booking = new Booking();
+        User user = new User();
+        GuestState guestState = new GuestState();
+        guestState.setUser(user);
+        guestState.setState(State.PENDING);
+        booking.getGuests().add(guestState);
+
+        Booking savedBooking = new Booking();
+        savedBooking.getGuests().add(guestState);
+
+        when(request.getAttribute("claims")).thenReturn(claims);
+        when(claims.get("user", User.class)).thenReturn(user);
+        when(bookingService.createBooking(booking)).thenReturn(savedBooking);
+
+        ResponseEntity<?> response = bookingController.createBooking(booking, request);
+        assertNotNull(response);
+        assertEquals(ResponseEntity.status(500).body("Owner not found in the booking"), response);
+        verify(bookingService, times(1)).createBooking(booking);
+        verify(notificationService, times(0)).envoyerNotification(anyString(), anyString(), anyString());
     }
 }

@@ -1,9 +1,12 @@
 package com.ynov.m2.advanced_software_development.cautious_guacamole.client.component;
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
@@ -16,16 +19,26 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RoomComponentTest extends ApplicationTest {
 
     private RoomComponent roomComponentUnderTest;
+    private VBox roomComponent;
+    private Label labelTitle;
 
     @Override
     public void start(Stage stage) throws Exception {
-        // Instancie manuellement le composant
-        roomComponentUnderTest = new RoomComponent();
+        // Charge le fichier FXML
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/RoomComponent.fxml"));
+        roomComponentUnderTest = loader.load();
+        labelTitle = (Label) roomComponentUnderTest.lookup("#labelTitle");
 
         // On ajoute le composant dans une scène JavaFX
         Scene scene = new Scene(roomComponentUnderTest, 800, 600);
         stage.setScene(scene);
         stage.show();
+    }
+
+    @BeforeEach
+    void setUp() throws Exception {
+        // Configuration initiale si nécessaire
     }
 
     @Test
@@ -43,5 +56,9 @@ public class RoomComponentTest extends ApplicationTest {
         assertNotNull(label, "Le label #labelTitle devrait être chargé depuis le FXML");
         // On peut aussi vérifier son contenu texte
         assertFalse(label.getText().isEmpty(), "Le label ne doit pas être vide");
+
+        // Vérifie que le labelTitle est correctement chargé depuis le fichier FXML
+        assertNotNull(roomComponent);
+        assertNotNull(labelTitle, "Le label #labelTitle devrait être chargé depuis le FXML");
     }
 }
