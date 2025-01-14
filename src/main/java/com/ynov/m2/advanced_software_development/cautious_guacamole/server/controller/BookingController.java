@@ -37,7 +37,7 @@ public class BookingController {
 
         GuestState guestState = new GuestState();
         guestState.setUser(booking.getUser());
-        guestState.setState(State.PENDING);
+        guestState.setState(State.OWNER);
         booking.getGuests().add(guestState);
 
         Booking saved = bookingService.createBooking(booking);
@@ -96,6 +96,12 @@ public class BookingController {
     @GetMapping("/room/{roomId}")
     public ResponseEntity<List<Booking>> getReservationsBySalle(@PathVariable("salleId") Long salleId) {
         List<Booking> reservations = bookingService.getReservationsBySalle(salleId);
+        return ResponseEntity.ok(reservations);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Booking>> getReservationsBySalle() {
+        List<Booking> reservations = bookingService.getAllBookings();
         return ResponseEntity.ok(reservations);
     }
 
