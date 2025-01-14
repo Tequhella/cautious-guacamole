@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="TOP_LEFT" style="-fx-padding: 10; -fx-background-color: #ffffff;" fx:controller="com.ynov.m2.advanced_software_development.cautious_guacamole.client.controller.UserStateComponentController">
+
+    <!-- Ligne pour user1 -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Text text="user1" style="-fx-font-size: 14px;" />
+        <Circle radius="5" fill="green" />
+    </HBox>
+
+    <!-- Ligne pour user2 -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Text text="user2" style="-fx-font-size: 14px;" />
+        <Circle radius="5" fill="orange" />
+    </HBox>
+
+    <!-- Ligne pour user3 -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Text text="user3" style="-fx-font-size: 14px;" />
+        <Circle radius="5" fill="red" />
+    </HBox>
+
+    <!-- Ligne pour user4 -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Text text="user4" style="-fx-font-size: 14px;" />
+        <Circle radius="5" fill="white" stroke="black" strokeWidth="1" />
+    </HBox>
+
+</VBox>

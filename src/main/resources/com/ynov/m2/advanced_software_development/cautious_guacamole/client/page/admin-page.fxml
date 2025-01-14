@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" spacing="10" style="-fx-padding: 10" fx:controller="com.ynov.m2.advanced_software_development.cautious_guacamole.client.controller.AdminPageController">
+    <children>
+        <!-- Barre supérieure avec les boutons -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <children>
+                <!-- Bouton "Retour à l'accueil" à gauche -->
+                <Button text="Retour à l'accueil" fx:id="homePageButton" onAction="#handleGoOnHomePage"/>
+
+                <!-- Espacement flexible pour positionner les boutons aux extrémités -->
+                <HBox HBox.hgrow="ALWAYS" />
+
+                <!-- Bouton "Créer une salle" à droite -->
+                <Button text="Créer une salle" fx:id="roomButton" onAction="#handleRoom"/>
+            </children>
+        </HBox>
+
+        <!-- Contenu principal pouvant être complété -->
+        <VBox spacing="10" alignment="TOP_LEFT">
+            <!-- Ajouter les éléments supplémentaires de gestion ici -->
+            <fx:include source="../component/room-component.fxml" />
+        </VBox>
+    </children>
+</VBox>

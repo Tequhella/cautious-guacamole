@@ -115,7 +115,30 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
-		</dependency>
+        </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.1.0</version>
+        </dependency>
+        <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.9.3</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.testfx</groupId>
+        <artifactId>testfx-core</artifactId>
+        <version>4.0.16-alpha</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.testfx</groupId>
+        <artifactId>testfx-junit5</artifactId>
+        <version>4.0.16-alpha</version>
+        <scope>test</scope>
+    </dependency>
 	</dependencies>
 
 	<build>
@@ -136,7 +159,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>com.ynov.m2.advanced_software_development.cautious_guacamole.client.page.LoginPage</mainClass>
+					<mainClass>com.ynov.m2.advanced_software_development.cautious_guacamole.client.page.HomePage</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
