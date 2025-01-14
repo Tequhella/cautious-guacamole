@@ -22,7 +22,7 @@ public class UserService {
     private long jwtExpirationInMs;
 
     @Autowired
-    private UserRepository userRepo;
+    private UserRepository userRepository;
 
     //public String authenticate(String username, String password) {
     //    User user = userRepo.findByUsername(username)
@@ -52,5 +52,18 @@ public class UserService {
     private boolean passwordMatches(String rawPassword, String hashedPassword) {
         // TODO: vérifier avec un encodeur bcrypt/BCryptPasswordEncoder
         return rawPassword.equals(hashedPassword);
+    }
+
+    public User saveUser(String email, String password, String usernme, String role) {
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setName(usernme);
+        user.setRole(role);
+        return userRepository.save(user);
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

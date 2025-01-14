@@ -8,6 +8,7 @@ class CautiousGuacamoleApplicationTests {
 
 	@Test
 	void contextLoads() {
+        
 	}
 
 }

@@ -23,14 +23,14 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
 
-    public String authenticate(String username, String password) {
-        User user = userRepository.findByUsername(username);
+    public String authenticate(String email, String password) {
+        User user = userRepository.findByEmail(email);
         if (user == null) {
             return null;
         }
 
         if (BCrypt.checkpw(password, user.getPassword())) {
-            return JwtUtils.generateToken(user);
+            return JwtUtils.generateToken(user.getEmail());
         }
         return null;
     }
