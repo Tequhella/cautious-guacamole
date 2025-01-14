@@ -3,8 +3,10 @@ package com.ynov.m2.advanced_software_development.cautious_guacamole.server.mode
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+// Ajoutez cet import manquant
+import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.booking.GuestState;
 
 class GuestStateTest {
 
@@ -33,13 +35,14 @@ class GuestStateTest {
     void testUserGetterSetter() {
         User user = new User();
         user.setId(1L);
-        user.setUsername("testUser");
+        // Remplacez setUsername par une méthode existante pour définir le nom d'utilisateur
+        user.setName("testUser");
 
         guestState.setUser(user);
 
         assertNotNull(guestState.getUser());
         assertEquals(1L, guestState.getUser().getId());
-        assertEquals("testUser", guestState.getUser().getUsername());
+        assertEquals("testUser", guestState.getUser().getName());
     }
 
     @Test

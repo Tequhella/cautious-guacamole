@@ -1,10 +1,10 @@
 package com.ynov.m2.advanced_software_development.cautious_guacamole.server.controller;
 
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.controller.AuthController.LoginRequest;
-import com.ynov.m2.advanced_software_development.cautious_guacamole.server.controller.AuthController.LoginResponse;
+import com.ynov.m2.advanced_software_development.cautious_guacamole.server.controller.AuthController.RegisterRequest;
 import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.user.User;
-import com.ynov.m2.advanced_software_development.cautious_guacamole.server.model.user.UserTest;
-import com.ynov.m2.advanced_software_development.cautious_guacamole.server.service.AuthService;
+import com.ynov.m2.advanced_software_development.cautious_guacamole.server.security.JwtUtils;
+import com.ynov.m2.advanced_software_development.cautious_guacamole.server.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,61 +20,100 @@ import static org.mockito.Mockito.*;
 class AuthControllerTest {
 
     @Mock
-    private AuthService authService;
+    private JwtUtils jwtUtils; // Vous pouvez injecter JwtUtils en bean, ou moquer ses méthodes statiques
+    
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private AuthController authController;
 
+    private RegisterRequest registerRequest;
     private LoginRequest loginRequest;
-    private User newUser;
+
+    private User mockUser;
 
     @BeforeEach
     void setUp() {
-        loginRequest = new LoginRequest();
-        // Settez vos identifiants de test
-        // Par exemple:
-        // loginRequest.username = "testUser";
-        // loginRequest.password = "testPassword";
-        
-        // Comme les champs de LoginRequest sont package-private,
-        // on peut les renseigner via la réflexion ou créer un constructeur.
-        // Ici, on utilise l'accès direct si on est dans le même package.
-        // Sinon, adaptez selon votre besoin.
+        // Préparation de données factices
+        registerRequest = new RegisterRequest();
+        registerRequest.email = "alice@example.com";
+        registerRequest.password = "secret";
+        registerRequest.username = "Alice";
+        registerRequest.role = "USER";
 
-        newUser = new User();
-        newUser.setName("newUser");
-        newUser.setPassword("newPass");
-        newUser.setEmail("newuser@example.com");
+        loginRequest = new LoginRequest();
+        loginRequest.email = "alice@example.com";
+        loginRequest.password = "secret";
+
+        mockUser = new User();
+        mockUser.setEmail("alice@example.com");
+        mockUser.setPassword("secret");
+        mockUser.setName("Alice");
+        mockUser.setRole("USER");
     }
 
+    // -------------------------------------------------------------------
+    // Tests pour REGISTER
+    // -------------------------------------------------------------------
     @Test
-    void testLogin_Success() throws Exception {
+    void testRegister_EmailAlreadyExists() {
         // Arrange
-        // Simule le comportement : si on appelle authService.authenticate avec user= "testUser" / pass= "testPassword",
-        // on retourne un token fictif.
-        when(authService.authenticate(anyString(), anyString()))
-                .thenReturn("fake-jwt-token");
+        // On simule que l'email existe déjà
+        when(userService.findByEmail("alice@example.com")).thenReturn(mockUser);
 
         // Act
-        ResponseEntity<?> response = authController.login(loginRequest);
+        ResponseEntity<?> response = authController.register(registerRequest);
 
         // Assert
         assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody() instanceof LoginResponse);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(response.getBody() instanceof String);
+        assertTrue(response.getBody().toString().contains("L'email existe déjà"));
 
-        LoginResponse loginResponse = (LoginResponse) response.getBody();
-        assertEquals("fake-jwt-token", loginResponse.getToken());
-        verify(authService, times(1))
-                .authenticate(loginRequest.getUsername(), loginRequest.getPassword());
+        verify(userService, times(1)).findByEmail("alice@example.com");
+        // Puisqu'on a détecté un doublon, on ne crée pas l'utilisateur
+        verify(userService, never()).saveUser(any(), any(), any(), any());
     }
 
     @Test
-    void testLogin_Failure() throws Exception {
+    void testRegister_Success() {
         // Arrange
-        // Simule un échec d'authentification -> on lève une exception
-        when(authService.authenticate(anyString(), anyString()))
-                .thenThrow(new RuntimeException("Invalid credentials"));
+        // On simule que l'email n'existe pas
+        when(userService.findByEmail("alice@example.com")).thenReturn(null);
+
+        // On simule la création d'un nouvel user
+        User savedUser = new User();
+        savedUser.setEmail("alice@example.com");
+        savedUser.setPassword("secret");
+        savedUser.setName("Alice");
+        savedUser.setRole("USER");
+
+        when(userService.saveUser("alice@example.com", "secret", "Alice", "USER"))
+                .thenReturn(savedUser);
+
+        // Act
+        ResponseEntity<?> response = authController.register(registerRequest);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertSame(savedUser, response.getBody());
+        // Vérifie qu'on a bien appelé userService.saveUser
+        verify(userService, times(1))
+                .saveUser("alice@example.com", "secret", "Alice", "USER");
+    }
+
+    // -------------------------------------------------------------------
+    // Tests pour LOGIN
+    // -------------------------------------------------------------------
+    @Test
+    void testLogin_UserNotFound() {
+        // Arrange
+        when(userService.findByEmail("bob@example.com")).thenReturn(null);
+
+        // On modifie le loginRequest pour forcer un email inconnu
+        loginRequest.email = "bob@example.com";
 
         // Act
         ResponseEntity<?> response = authController.login(loginRequest);
@@ -82,54 +121,55 @@ class AuthControllerTest {
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertEquals("Invalid credentials", response.getBody());
-        verify(authService, times(1))
-                .authenticate(loginRequest.getUsername(), loginRequest.getPassword());
+        assertTrue(response.getBody().toString().contains("Utilisateur introuvable"));
+
+        verify(userService, times(1)).findByEmail("bob@example.com");
     }
 
     @Test
-    void testRegister_Success() throws Exception {
+    void testLogin_InvalidPassword() {
         // Arrange
-        // Simule l'inscription réussie de l'utilisateur
-        User createdUser = new User();
-        createdUser.setId(1L);
-        createdUser.setUsername(newUser.getUsername());
-        createdUser.setPassword(newUser.getPassword());
-        createdUser.setEmail(newUser.getEmail());
+        // L'utilisateur existe, mais le mot de passe ne correspond pas
+        when(userService.findByEmail("alice@example.com")).thenReturn(mockUser);
 
-        when(authService.register(anyString(), anyString(), anyString(), anyString())).thenReturn(createdUser);
+        loginRequest.password = "wrongPassword";
 
         // Act
-        ResponseEntity<?> response = authController.register(newUser);
+        ResponseEntity<?> response = authController.login(loginRequest);
 
         // Assert
         assertNotNull(response);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        // On s'attend à recevoir l'utilisateur créé en body
-        assertTrue(response.getBody() instanceof UserTest);
-        User responseUser = (User) response.getBody();
-        assertEquals(1L, responseUser.getId());
-        assertEquals("newUser", responseUser.getUsername());
-        assertEquals("newuser@example.com", responseUser.getEmail());
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertTrue(response.getBody().toString().contains("Mot de passe invalide"));
 
-        // Vérifie qu'on a bien appelé authService.register une seule fois
-        verify(authService, times(1)).register(anyString(), anyString(), anyString(), anyString());
+        verify(userService, times(1)).findByEmail("alice@example.com");
     }
 
     @Test
-    void testRegister_Failure() throws Exception {
+    void testLogin_Success() {
         // Arrange
-        // Simule un échec d'inscription -> on lève une exception
-        when(authService.register(anyString(), anyString(), anyString(), anyString()))
-                .thenThrow(new RuntimeException("User already exists"));
+        when(userService.findByEmail("alice@example.com")).thenReturn(mockUser);
 
-        // Act
-        ResponseEntity<?> response = authController.register(newUser);
+        // Pour simuler la génération de token,
+        // on peut juste appeler la méthode statique 'JwtUtils.generateToken(...)'.
+        // Si JwtUtils est un bean, vous pouvez moquer 'jwtUtils.generateToken(...)'.
+        try (MockedStatic<JwtUtils> mockedStatic = mockStatic(JwtUtils.class)) {
+            mockedStatic.when(() -> JwtUtils.generateToken("alice@example.com"))
+                        .thenReturn("fake-jwt-token");
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("User already exists", response.getBody());
-        verify(authService, times(1)).register(anyString(), anyString(), anyString(), anyString());
+            // Act
+            ResponseEntity<?> response = authController.login(loginRequest);
+
+            // Assert
+            assertNotNull(response);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertTrue(response.getBody() instanceof AuthController.LoginResponse);
+
+            AuthController.LoginResponse body = (AuthController.LoginResponse) response.getBody();
+            assertEquals("fake-jwt-token", body.token);
+
+            verify(userService, times(1)).findByEmail("alice@example.com");
+            mockedStatic.verify(() -> JwtUtils.generateToken("alice@example.com"), times(1));
+        }
     }
 }
